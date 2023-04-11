@@ -12,7 +12,7 @@ contract MolochVaultTest is Test {
     address hacker = makeAddr("hacker");
 
     function setUp() external {
-        challenge = new MolochVault();
+        // challenge = new MolochVault();
     }
 
     function test_hack() external {
