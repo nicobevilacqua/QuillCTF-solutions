@@ -1,0 +1,29 @@
+#define macro MAIN() = takes(0) returns(0) {
+    returndatasize calldataload 0xe0 shr
+
+    dup1
+
+    // nextJump jumpi
+    0x0d jumpi
+
+    caller 
+    // returnJump jump
+    0x17 jump
+
+    // nextJump:
+    jumpdest
+      chainid eq
+      // gtffjzz jumpi
+      0x15 jumpi
+      
+      pc revert
+
+    // gtffjzz:
+    jumpdest
+      origin
+    
+    // returnJump: // huff uses push2 0x0000 for jump tags, which adds an unnecesary extra byte
+    jumpdest
+      returndatasize mstore
+      0x20 returndatasize return
+}
